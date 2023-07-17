@@ -1,0 +1,70 @@
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	"os/signal"
+	"sw-game-datapad/internal/server"
+	"sw-game-datapad/pkg/logger"
+	"syscall"
+	"time"
+)
+
+// func main() {
+// 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+// 	fmt.Println(ctx, stop)
+// 	srv := server.NewServer()
+// 	func() {
+// 		addr := "127.0.0.1"
+// 		port := "8080"
+// 		fullAddress := fmt.Sprintf("%s:%s", addr, port)
+// 		logger.Log(logger.LogLevelInfo, "Starting server", map[string]string{
+// 			"address": addr,
+// 			"port":    port,
+// 		})
+// 		if err := srv.ListenAndServe(fullAddress); err != nil {
+// 			logger.Log(logger.LogLevelFatal, "an error was encountered while running server", err)
+// 		}
+// 	}()
+// 	<-ctx.Done()
+
+// 	stop()
+// 	logger.Log(logger.LogLevelInfo, "shutting down application")
+
+// 	ctx,cancel:= context.WithTimeout(context.Background(), 5 * time.Second)
+// 	defer cancel()
+// 	if err:= srv.Shutdown(ctx); err!=nil {
+// 		logger.Log(logger.LogLevelFatal, "server could not shutdown gracefully; forcing shutdown", err)
+// 	}
+// }
+
+func main() {
+	srv := server.NewServer()
+	func() {
+		addr := "127.0.0.1"
+		port := "8080"
+		fullAddress := fmt.Sprintf("%s:%s", addr, port)
+		logger.Log(logger.LogLevelInfo, "Starting server", map[string]string{
+			"address": addr,
+			"port":    port,
+		})
+		if err := srv.ListenAndServe(fullAddress); err != nil {
+			logger.Log(logger.LogLevelFatal, "an error was encountered while running server", err)
+		}
+	}()
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, syscall.SIGTSTP)
+	<-quit
+	logger.Log(logger.LogLevelInfo, "shutting down application")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		logger.Log(logger.LogLevelFatal, "server could not shutdown gracefully; forcing shutdown", err)
+	}
+	select {
+	case <-ctx.Done():
+		logger.Log(logger.LogLevelInfo, "timeout of 5 seconds.")
+	}
+	logger.Log(logger.LogLevelInfo, "server exiting")
+}
