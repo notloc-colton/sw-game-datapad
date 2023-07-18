@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"sw-game-datapad/internal/services"
 	"sw-game-datapad/internal/swData"
 
 	"github.com/gin-gonic/gin"
@@ -10,10 +11,14 @@ import (
 type CharacterResponse struct {
 	Characters []swData.Character `json:"characters,omitempty"`
 }
-type CharacterController struct{}
+type CharacterController struct {
+	Service services.CharacterService
+}
 
-func NewCharacterController() CharacterController {
-	return CharacterController{}
+func NewCharacterController(service services.CharacterService) CharacterController {
+	return CharacterController{
+		Service: service,
+	}
 }
 
 func (controller *CharacterController) GetCharacters(c *gin.Context) {
