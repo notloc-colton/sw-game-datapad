@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"sw-game-datapad/internal/controllers"
+	"sw-game-datapad/internal/routes"
 	"sw-game-datapad/internal/server"
-	"sw-game-datapad/internal/vendor"
 	"sw-game-datapad/pkg/logger"
 	"syscall"
 	"time"
@@ -40,10 +41,10 @@ import (
 // 	}
 // }
 
-func gerp() {
+func main() {
 	srv := server.NewServer()
-	// httpclient.Request()
-	func() {
+	routes.AttachCharacterRoutes(&srv, controllers.NewCharacterController())
+	go func() {
 		addr := "127.0.0.1"
 		port := "8080"
 		fullAddress := fmt.Sprintf("%s:%s", addr, port)
@@ -52,7 +53,8 @@ func gerp() {
 			"port":    port,
 		})
 		if err := srv.ListenAndServe(fullAddress); err != nil {
-			logger.Log(logger.LogLevelFatal, "an error was encountered while running server", err)
+			fmt.Println(err)
+			logger.Log(logger.LogLevelFatal, "an error was encountered while running server", err.Error())
 		}
 	}()
 	quit := make(chan os.Signal)
@@ -70,6 +72,7 @@ func gerp() {
 	}
 	logger.Log(logger.LogLevelInfo, "server exiting")
 }
-func main(){
-	vendor.NewVendorService().GetCharacters()
-}
+
+// func main(){
+// 	vendor.NewVendorService().GetCharacters()
+// }

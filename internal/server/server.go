@@ -7,6 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type AttachRoute interface {
+	GET(relativePath string, handlers ...gin.HandlerFunc) gin.IRoutes
+}
 type Server struct {
 	ginEngine  *gin.Engine
 	httpServer http.Server
@@ -24,4 +27,7 @@ func (s *Server) ListenAndServe(addr string) error {
 }
 func (s *Server) Shutdown(ctx context.Context) error {
 	return s.httpServer.Shutdown(ctx)
+}
+func (s *Server) AttachRoute() AttachRoute {
+	return s.ginEngine
 }
