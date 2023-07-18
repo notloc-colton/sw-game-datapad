@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"sw-game-datapad/internal/server"
+	"sw-game-datapad/internal/vendor"
 	"sw-game-datapad/pkg/logger"
 	"syscall"
 	"time"
@@ -39,8 +40,9 @@ import (
 // 	}
 // }
 
-func main() {
+func gerp() {
 	srv := server.NewServer()
+	// httpclient.Request()
 	func() {
 		addr := "127.0.0.1"
 		port := "8080"
@@ -67,4 +69,7 @@ func main() {
 		logger.Log(logger.LogLevelInfo, "timeout of 5 seconds.")
 	}
 	logger.Log(logger.LogLevelInfo, "server exiting")
+}
+func main(){
+	vendor.NewVendorService().GetCharacters()
 }

@@ -3,18 +3,23 @@ package logger
 
 import "go.uber.org/zap"
 
-type noMsgLogger func(args ...any)
-type msgLogger func(msg string, args ...any)
+type levelLogFunc func(args ...any)
 
 var logger zap.SugaredLogger
 
 func Log(level LogLevel, msg string, additionalInfo ...any) {
 	switch level {
 	case LogLevelError:
-		logger.Errorw(msg, additionalInfo...)
+		logMsg(logger.Error, msg, additionalInfo...)
 	case LogLevelFatal:
-		logger.Fatalw(msg, additionalInfo...)
+		logMsg(logger.Fatal, msg, additionalInfo...)
 	default:
-		logger.Infow(msg, additionalInfo...)
+		logMsg(logger.Info, msg, additionalInfo...)
+	}
+}
+func logMsg[LevelLog levelLogFunc](levelLog levelLogFunc, msg string, additionalInfo ...any) {
+	levelLog(msg)
+	if len(additionalInfo) > 0 {
+		levelLog(additionalInfo)
 	}
 }
