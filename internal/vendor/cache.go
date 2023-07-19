@@ -6,35 +6,35 @@ import (
 	"github.com/bluele/gcache"
 )
 
-type gCache struct {
-	characters gcache.Cache
-}
-
 const (
 	cacheSize = 1_000_000
 	cacheTTL  = 1 * time.Hour // default expiration
 )
 
-func newGCache() *gCache {
-	return &gCache{
-		characters: gcache.New(cacheSize).Expiration(cacheTTL).ARC().Build(),
-	}
-}
-func (gc *gCache) update(queryString string, characters []Character, expireIn time.Duration) error {
-	return gc.characters.SetWithExpire(queryString, characters, expireIn)
+type tCache[T any] struct {
+	data gcache.Cache
 }
 
-func (gc *gCache) read(queryString string) ([]Character, bool) {
-	if val, err := gc.characters.Get(queryString); err != nil {
-		return nil, false
+func newTCache[T any]() *tCache[T] {
+	return &tCache[T]{
+		data: gcache.New(cacheSize).Expiration(cacheTTL).ARC().Build(),
+	}
+}
+func (gc *tCache[T]) update(queryString string, characters T) error {
+	return gc.data.SetWithExpire(queryString, characters, 1*time.Hour)
+}
+
+func (gc *tCache[T]) read(queryString string) (T, bool) {
+	if val, err := gc.data.Get(queryString); err != nil {
+		return *new(T), false
 	} else {
-		if characters, found := val.([]Character); found {
+		if characters, found := val.(T); found {
 			return characters, true
 		}
 	}
-	return nil, false
+	return *new(T), false
 }
 
-func (gc *gCache) delete(queryString string) {
-	gc.characters.Remove(queryString)
+func (gc *tCache[T]) delete(queryString string) {
+	gc.data.Remove(queryString)
 }

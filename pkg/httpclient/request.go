@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 
 	"github.com/hashicorp/go-retryablehttp"
-	// "github.com/monaco-io/request"
 )
 
 func formatError(msg string, err error) error {

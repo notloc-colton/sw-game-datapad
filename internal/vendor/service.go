@@ -13,12 +13,20 @@ type VendorService interface {
 	GetStarShip(id string) (*StarShip, error)
 }
 type vendorService struct {
-	baseUrl string
+	baseUrl       string
+	cache         tCache[[]Character]
+	planetCache   tCache[Planet]
+	speciesCache  tCache[Species]
+	starshipCache tCache[StarShip]
 }
 
 func NewVendorService(baseUrl string) *vendorService {
 	return &vendorService{
-		baseUrl: baseUrl,
+		baseUrl:       baseUrl,
+		cache:         *newTCache[[]Character](),
+		planetCache:   *newTCache[Planet](),
+		speciesCache:  *newTCache[Species](),
+		starshipCache: *newTCache[StarShip](),
 	}
 }
 func (service *vendorService) formUrl(resource string) string {
@@ -26,41 +34,62 @@ func (service *vendorService) formUrl(resource string) string {
 }
 func (service *vendorService) GetCharacters(queryString string) ([]Character, error) {
 	url := service.formUrl("people")
+	if cached, found := service.cache.read(queryString); found {
+		return cached, nil
+	}
 	if res, err := httpclient.GetWithSearchString[multipleCharacters](url, queryString); err != nil {
 		logger.Log(logger.LogLevelError, "error", err.Error())
 		return nil, err
 	} else {
 		logger.Log(logger.LogLevelInfo, "response", *res)
+		go func() {
+			service.cache.update(queryString, res.Characters)
+		}()
 		return res.Characters, nil
 	}
 }
 func (service *vendorService) GetPlanet(id string) (*Planet, error) {
 	url := service.formUrl("planets/" + id + "/")
+	if cached, found := service.planetCache.read(id); found {
+		return &cached, nil
+	}
 	if res, err := httpclient.Get[Planet](url); err != nil {
 		logger.Log(logger.LogLevelError, "error", err.Error())
 		return nil, err
 	} else {
-		logger.Log(logger.LogLevelInfo, "response", *res)
+		go func() {
+			service.planetCache.update(id, *res)
+		}()
 		return res, nil
 	}
 }
 func (service *vendorService) GetSpecies(id string) (*Species, error) {
 	url := service.formUrl("species/" + id + "/")
+	if cached, found := service.speciesCache.read(id); found {
+		return &cached, nil
+	}
 	if res, err := httpclient.Get[Species](url); err != nil {
 		logger.Log(logger.LogLevelError, "error", err.Error())
 		return nil, err
 	} else {
-		logger.Log(logger.LogLevelInfo, "response", *res)
+		go func() {
+			service.speciesCache.update(id, *res)
+		}()
 		return res, nil
 	}
 }
 func (service *vendorService) GetStarShip(id string) (*StarShip, error) {
 	url := service.formUrl("starships/" + id + "/")
+	if cached, found := service.starshipCache.read(id); found {
+		return &cached, nil
+	}
 	if res, err := httpclient.Get[StarShip](url); err != nil {
 		logger.Log(logger.LogLevelError, "error", err.Error())
 		return nil, err
 	} else {
-		logger.Log(logger.LogLevelInfo, "response", *res)
+		go func() {
+			service.starshipCache.update(id, *res)
+		}()
 		return res, nil
 	}
 }
