@@ -14,10 +14,10 @@ type VendorService interface {
 }
 type vendorService struct {
 	baseUrl       string
-	cache         tCache[[]Character]
-	planetCache   tCache[Planet]
-	speciesCache  tCache[Species]
-	starshipCache tCache[StarShip]
+	cache         gCache[[]Character]
+	planetCache   gCache[Planet]
+	speciesCache  gCache[Species]
+	starshipCache gCache[StarShip]
 }
 
 func NewVendorService(baseUrl string) *vendorService {

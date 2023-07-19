@@ -14,7 +14,7 @@ type CharacterService interface {
 	GetCharacters(query string) ([]swData.Character, error)
 }
 type characterService struct {
-	Vendor  vendor.VendorService
+	Vendor vendor.VendorService
 }
 
 func NewCharacterService(vendorService vendor.VendorService) *characterService {

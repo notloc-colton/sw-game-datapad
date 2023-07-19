@@ -33,26 +33,4 @@ func (controller *CharacterController) GetCharacters(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, res)
 	}
-	// c.JSON(http.StatusOK, CharacterResponse{
-	// 	Characters: []swData.Character{
-	// 		{
-	// 			Name: "Luke",
-	// 			HomePlanet: swData.Planet{
-	// 				Name: "Tatooine",
-	// 			},
-	// 			Species: swData.Species{
-	// 				Name: "Human",
-	// 			},
-	// 		},
-	// 		{
-	// 			Name: "Leia",
-	// 			HomePlanet: swData.Planet{
-	// 				Name: "Alderaan",
-	// 			},
-	// 			Species: swData.Species{
-	// 				Name: "Human",
-	// 			},
-	// 		},
-	// 	},
-	// })
 }
