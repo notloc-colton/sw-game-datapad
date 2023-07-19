@@ -57,6 +57,31 @@ func (store *characterDataStore) PopulateCharacters() {
 		character.StarShips = shipArr
 	}
 }
+
+func (store *characterDataStore) AddPlanet(id string, planet vendor.Planet) {
+	store.planets[id] = swData.Planet{
+		ID:         id,
+		Name:       planet.Name,
+		Climate:    planet.Climate,
+		Population: planet.Population,
+	}
+}
+func (store *characterDataStore) AddSpecies(id string, species vendor.Species) {
+	store.species[id] = swData.Species{
+		ID:              id,
+		Name:            species.Name,
+		AverageLifespan: species.AverageLifespan,
+		Language:        species.Language,
+	}
+}
+func (store *characterDataStore) AddStarShip(id string, starship vendor.StarShip) {
+	store.starShips[id] = swData.StarShip{
+		ID:            id,
+		Name:          starship.Name,
+		CargoCapacity: starship.CargoCapacity,
+		Class:         starship.StarshipClass,
+	}
+}
 func (store *characterDataStore) Characters() []swData.Character {
 	characters := make([]swData.Character, 0)
 	for _, character := range store.characters {
@@ -67,35 +92,11 @@ func (store *characterDataStore) Characters() []swData.Character {
 func (store *characterDataStore) Planets() map[string]swData.Planet {
 	return store.planets
 }
-func (store *characterDataStore) AddPlanet(id string, planet vendor.Planet) {
-	store.planets[id] = swData.Planet{
-		ID:         id,
-		Name:       planet.Name,
-		Climate:    planet.Climate,
-		Population: planet.Population,
-	}
-}
 func (store *characterDataStore) Species() map[string]swData.Species {
 	return store.species
 }
-func (store *characterDataStore) AddSpecies(id string, species vendor.Species) {
-	store.species[id] = swData.Species{
-		ID:              id,
-		Name:            species.Name,
-		AverageLifespan: species.AverageLifespan,
-		Language:        species.Language,
-	}
-}
 func (store *characterDataStore) StarShips() map[string]swData.StarShip {
 	return store.starShips
-}
-func (store *characterDataStore) AddStarShip(id string, starship vendor.StarShip) {
-	store.starShips[id] = swData.StarShip{
-		ID:            id,
-		Name:          starship.Name,
-		CargoCapacity: starship.CargoCapacity,
-		Class:         starship.StarshipClass,
-	}
 }
 func parseIds(urls []string) []string {
 	ids := make([]string, 0)

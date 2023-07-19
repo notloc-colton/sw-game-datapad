@@ -31,3 +31,27 @@ What do you do if you get back multiple characters?
 What do you do if you get no characters back?
 How to handle multiple starships?
 How to handle if a section (starship, home planet, species) is empty?
+
+
+
+
+
+Bench marks
+
+
+// Benchmarks
+// "l" with everything 6.49, 5.42, 4.73
+// "l" with planets ONLY 3.43, 2.27, 5.12
+// "p" with planets & species 15.1, 4.56, 4.58
+// "p" with everything 18.73, 17.44
+
+
+
+// Benchmarks
+// "l" with everything
+// "l" with planets ONLY
+// "p" with planets & species 1.6, 2.24, 2.0
+// "p" with everything 2.87, 4.0, 5.73
+
+
+
