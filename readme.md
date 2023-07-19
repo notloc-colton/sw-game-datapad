@@ -1,57 +1,51 @@
-Summary
-Using the Star Wars API (located here: https://swapi.dev/), create an application that
-can provide various required information on a provided Star Wars character
+Description:
+  Simulates a "datapad" for all your geeky star wars needs.
 
-Requirements
-The application should:
-Take a Star Wars character name, and returns the following information about the
-character:
+How to run locally:
+  -go get -d ./...
+  -go run cmd/main.go
+  
+  Note: server will be running on 127.0.0.1:8080
 
-Starship
-Starship name, cargo capacity, and Starship class
-Home Planet
-Planet name, population, and climate
-Species
-Name, language, and average lifespan
-
-
-Handle as few as one letter in the input
-e.g. if the user inputs c, return information for all characters with a c in the name
-If multiple characters are found, return in alphabetical order by character name
-Do Not:
-Make use of any of the SWAPI helper libraries
-
-You are able to use whichever language you are most comfortable with. How you do
-this, how you take the input, or display the output is all up to you. Creativity is
-encouraged
-
-BE Take Home Technical Interview 2
-Additional Considerations
-What do you do if you get back multiple characters?
-What do you do if you get no characters back?
-How to handle multiple starships?
-How to handle if a section (starship, home planet, species) is empty?
-
-
-
-
-
-Bench marks
-
-
-// Benchmarks
-// "l" with everything 6.49, 5.42, 4.73
-// "l" with planets ONLY 3.43, 2.27, 5.12
-// "p" with planets & species 15.1, 4.56, 4.58
-// "p" with everything 18.73, 17.44
+API Documentation:
+  The api is relatively simple, there is one endpoint with one query string parameter ("query") that accepts any number of characters to query the application for
+  matching star wars characters. The response will be an array of star wars characters (as seen in the below example).
+  Example
+    Request: curl --location 'localhost:8080/characters?query=chew'
+    Response: [
+    {
+        "name": "Chewbacca",
+        "homePlanet": {
+            "name": "Kashyyyk",
+            "climate": "tropical",
+            "population": "45000000"
+        },
+        "species": {
+            "name": "Wookie",
+            "averageLifespan": "400",
+            "language": "Shyriiwook"
+        },
+        "starships": [
+            {
+                "name": "Millennium Falcon",
+                "cargoCapacity": "100000",
+                "class": "Light freighter"
+            },
+            {
+                "name": "Imperial shuttle",
+                "cargoCapacity": "80000",
+                "class": "Armed government transport"
+            }
+        ]
+    }
+]
 
 
 
-// Benchmarks
-// "l" with everything
-// "l" with planets ONLY
-// "p" with planets & species 1.6, 2.24, 2.0
-// "p" with everything 2.87, 4.0, 5.73
-
+Considerations:
+  I felt like the biggest issue that I saw with creating this application was the speed. The requirements specified that the app basically needed to consolidate 4 different swapi endpoints
+  into 1. So, as opposed to trying to be super creative with what the endpoint request and response bodies looked like (I feel like simplicity is beauty), I focused on speed. Now, I may have completely 
+  missed the mark with how you guys may have wanted this app built (maybe having a super creative request and response body was key), but I personally felt like speed was the most pressing issue in this   app... Additionally, there were many questions that I could have asked with regards to data integrity (ex. "Is the character species `Name` field required to be non empty string?") but I took some 
+  liberty and answered most of those questions on my own- I hope that was alright! 
 
 
