@@ -10,26 +10,11 @@ import (
 	"time"
 )
 
-type PlanetCall struct {
-	Id       string
-	Response vendor.Planet
-	Error    error
-}
-type SpeciesCall struct {
-	Id       string
-	Response vendor.Species
-	Error    error
-}
-type StarshipsCall struct {
-	Id       string
-	Response vendor.StarShip
-	Error    error
-}
 type CharacterService interface {
 	GetCharacters(query string) ([]swData.Character, error)
 }
 type characterService struct {
-	Vendor vendor.VendorService
+	Vendor  vendor.VendorService
 }
 
 func NewCharacterService(vendorService vendor.VendorService) *characterService {

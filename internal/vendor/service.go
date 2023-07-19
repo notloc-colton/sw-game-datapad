@@ -6,21 +6,27 @@ import (
 	"sw-game-datapad/pkg/logger"
 )
 
-type VendorService struct {
+type VendorService interface {
+	GetCharacters(queryString string) ([]Character, error)
+	GetPlanet(id string) (*Planet, error)
+	GetSpecies(id string) (*Species, error)
+	GetStarShip(id string) (*StarShip, error)
+}
+type vendorService struct {
 	baseUrl string
 }
 
-func NewVendorService(baseUrl string) *VendorService {
-	return &VendorService{
+func NewVendorService(baseUrl string) *vendorService {
+	return &vendorService{
 		baseUrl: baseUrl,
 	}
 }
-func (service *VendorService) formUrl(resource string) string {
+func (service *vendorService) formUrl(resource string) string {
 	return fmt.Sprintf("%s/%s/", service.baseUrl, resource)
 }
-func (service *VendorService) GetCharacters(queryString string) ([]Character, error) {
+func (service *vendorService) GetCharacters(queryString string) ([]Character, error) {
 	url := service.formUrl("people")
-	if res, err := httpclient.GetWithSearchString[apiResponse](url, queryString); err != nil {
+	if res, err := httpclient.GetWithSearchString[multipleCharacters](url, queryString); err != nil {
 		logger.Log(logger.LogLevelError, "error", err.Error())
 		return nil, err
 	} else {
@@ -28,7 +34,7 @@ func (service *VendorService) GetCharacters(queryString string) ([]Character, er
 		return res.Characters, nil
 	}
 }
-func (service *VendorService) GetPlanet(id string) (*Planet, error) {
+func (service *vendorService) GetPlanet(id string) (*Planet, error) {
 	url := service.formUrl("planets/" + id + "/")
 	if res, err := httpclient.Get[Planet](url); err != nil {
 		logger.Log(logger.LogLevelError, "error", err.Error())
@@ -38,7 +44,7 @@ func (service *VendorService) GetPlanet(id string) (*Planet, error) {
 		return res, nil
 	}
 }
-func (service *VendorService) GetSpecies(id string) (*Species, error) {
+func (service *vendorService) GetSpecies(id string) (*Species, error) {
 	url := service.formUrl("species/" + id + "/")
 	if res, err := httpclient.Get[Species](url); err != nil {
 		logger.Log(logger.LogLevelError, "error", err.Error())
@@ -48,7 +54,7 @@ func (service *VendorService) GetSpecies(id string) (*Species, error) {
 		return res, nil
 	}
 }
-func (service *VendorService) GetStarShip(id string) (*StarShip, error) {
+func (service *vendorService) GetStarShip(id string) (*StarShip, error) {
 	url := service.formUrl("starships/" + id + "/")
 	if res, err := httpclient.Get[StarShip](url); err != nil {
 		logger.Log(logger.LogLevelError, "error", err.Error())

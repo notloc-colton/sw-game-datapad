@@ -2,7 +2,7 @@ package vendor
 
 import "time"
 
-type apiResponse struct {
+type multipleCharacters struct {
 	Count      int         `json:"count"`
 	Next       string      `json:"next"`
 	Previous   any         `json:"previous"`
