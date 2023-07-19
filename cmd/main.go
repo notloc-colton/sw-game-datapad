@@ -9,6 +9,7 @@ import (
 	"sw-game-datapad/internal/routes"
 	"sw-game-datapad/internal/server"
 	"sw-game-datapad/internal/services"
+	"sw-game-datapad/internal/vendor"
 	"sw-game-datapad/pkg/logger"
 	"syscall"
 	"time"
@@ -44,7 +45,7 @@ import (
 
 func main() {
 	srv := server.NewServer()
-	routes.AttachCharacterRoutes(&srv, controllers.NewCharacterController(services.NewCharacterService()))
+	routes.AttachCharacterRoutes(&srv, controllers.NewCharacterController(services.NewCharacterService(*vendor.NewVendorService("https://swapi.dev/api/"))))
 	go func() {
 		addr := "127.0.0.1"
 		port := "8080"
